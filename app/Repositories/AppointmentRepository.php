@@ -21,6 +21,14 @@ class AppointmentRepository implements AppointmentInterface {
         DB::beginTransaction();
 
         try {
+            $is_not_reservable = Appointment::where('appointment_date', $data["date"]->setHour($data["available_hour"])->setMinute(0)->setSecond(0))
+                ->lockForUpdate() // Bloqueo de registros para la concurrencia
+                ->exists();
+
+            if ($is_not_reservable) {
+                return false;
+            }
+
             $user = User::firstOrCreate(
                 ['dni' =>  $data["dni"]],
                 [
@@ -46,7 +54,7 @@ class AppointmentRepository implements AppointmentInterface {
                 "error" => $th->getMessage(),
                 "data" => $data
             ]);
-            DB::rollBack();
+            DB::rollback();
             return false;
         }
     }

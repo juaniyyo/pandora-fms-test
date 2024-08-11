@@ -31,7 +31,6 @@ class AppointmentController extends Controller
 
         // Obtenemos las horas ocupadas para la fecha dada
         $available_hour = $this->appointment->getAvailableHours($data);
-        Log::debug("Available", [$available_hour]);
 
         if ($available_hour !== null && !empty($available_hour)) {
             // Crear la cita en la primera hora disponible
@@ -40,7 +39,10 @@ class AppointmentController extends Controller
 
                 $appointment = $this->appointment->store($data);
 
-                return $this->success(new AppointmentResource($appointment), 'Cita creada correctamente');
+                if($appointment) {
+                    return $this->success(new AppointmentResource($appointment), 'Cita creada correctamente');
+                }
+                throw new \Exception("No se ha podido procesar la reserva");
 
             } catch (\Exception $e) {
                 return $this->error(
