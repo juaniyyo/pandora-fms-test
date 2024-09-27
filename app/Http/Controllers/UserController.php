@@ -45,5 +45,6 @@ class UserController extends Controller
             'subject'   => 'Cita confirmada',
             'html'      => (new ConfirmAppointment($appointment))->render(),
         ]);
+        return $this->success([]);
     }
 }

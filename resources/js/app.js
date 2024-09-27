@@ -1,5 +1,9 @@
 import './bootstrap';
 
+const dateInput = document.getElementById('appointment-date');
+const today = new Date().toISOString().split('T')[0];
+dateInput.setAttribute('min', today);
+
 document.getElementById('dni').addEventListener('blur', function () {
     const dni = this.value;
     if(dni) {
